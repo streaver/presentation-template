@@ -433,13 +433,14 @@
       updateCurrentSlide(scroll);
     }
 
+    let requestSeq = 0;
     function sendRequest(action, requestedIndex = currentSlideIndex) {
       const payload = {
         type: "slide-request",
         source: syncId,
         action,
         index: Math.max(0, Math.min(allSlides.length - 1, requestedIndex)),
-        updatedAt: Date.now()
+        updatedAt: ++requestSeq
       };
 
       syncChannel?.postMessage(payload);

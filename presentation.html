@@ -1757,6 +1757,7 @@
       const syncChannel = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL) : null;
       let index = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace("#", "")) - 1 || 0));
       let presenterWindow = null;
+      let broadcastSeq = 0;
 
       const broadcastSlide = () => {
         const payload = {
@@ -1766,7 +1767,7 @@
           total: slides.length,
           title: slides[index].dataset.title,
           duration: slides[index].dataset.duration,
-          updatedAt: Date.now()
+          updatedAt: ++broadcastSeq
         };
 
         syncChannel?.postMessage(payload);
