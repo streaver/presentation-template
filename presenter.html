@@ -457,9 +457,12 @@
       sendRequest("show", currentSlideIndex);
     }
 
+    let lastSyncAt = 0;
     function receiveSync(message) {
       if (!message || message.source === syncId || message.type !== "slide-change") return;
       if (!Number.isFinite(message.index)) return;
+      if ((message.updatedAt ?? 0) <= lastSyncAt) return;
+      lastSyncAt = message.updatedAt;
 
       currentSlideIndex = Math.max(0, Math.min(allSlides.length - 1, message.index));
       syncStatus.textContent = `Synced: slide ${currentSlideIndex + 1} of ${allSlides.length}`;

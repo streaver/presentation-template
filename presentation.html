@@ -126,8 +126,8 @@
     }
 
     /* ── Background texture variants ─────────────────────────────── */
-    .bg-grid         { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark.png") center/600px repeat; }
-    .bg-grid-tilted  { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark-tilted.png") center/cover no-repeat; }
+    .bg-grid         { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark.png") center/auto no-repeat; }
+    .bg-grid-tilted  { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark-tilted.png") center/auto no-repeat; }
     .bg-white {
       background: #fff;
       --text: #282828;
@@ -141,7 +141,7 @@
     }
     .bg-radial       { background: var(--bg) url("assets/backgrounds/gradient-blue-radial.png") center/cover no-repeat; }
     .bg-diagonal     { background: var(--bg) url("assets/backgrounds/gradient-blue-diagonal.png") center/cover no-repeat; }
-    .bg-logo-pattern { background: var(--bg) url("assets/backgrounds/logo-pattern-light.png") center/400px repeat; }
+    .bg-logo-pattern { background: var(--bg) url("assets/backgrounds/logo-pattern-light.png") center/auto no-repeat; }
     .bg-deep         { background: var(--dark-deep); }
     .bg-blue         { background: var(--blue-primary); color: #fff; }
 
@@ -1870,8 +1870,11 @@
         if (Number.isFinite(requestedIndex) && requestedIndex !== index) show(requestedIndex);
       });
 
+      let lastRequestAt = 0;
       const receiveSync = (message) => {
         if (!message || message.source === syncId || message.type !== "slide-request") return;
+        if ((message.updatedAt ?? 0) <= lastRequestAt) return;
+        lastRequestAt = message.updatedAt;
         if (message.action === "next") next();
         if (message.action === "prev") prev();
         if (message.action === "show" && Number.isFinite(message.index)) show(message.index);
