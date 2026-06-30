@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Presenter Notes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+      --line: #d9dee7;
+      --accent: #155eef;
+      --accent-soft: #eef4ff;
+      --active: #0f5bd6;
+      --active-soft: #e8f1ff;
+      --note: #fff8e6;
+      --note-line: #f1c75b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+    }
+
+    .header-content,
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-content {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 0;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 2px;
+      font-size: 1.35rem;
+    }
+
+    .subtitle,
+    .meta,
+    .status {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    select,
+    button {
+      min-width: 260px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+      padding: 9px 12px;
+    }
+
+    button {
+      min-width: 0;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-buttons button {
+      min-width: 42px;
+      color: var(--accent);
+    }
+
+    .live-panel {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+      border: 1px solid #bed5ff;
+      border-radius: 12px;
+      background: var(--active-soft);
+      padding: 16px 18px;
+    }
+
+    .live-number {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: var(--active);
+      color: white;
+      font-size: 1.35rem;
+      font-weight: 850;
+    }
+
+    .live-panel h2 {
+      margin-bottom: 3px;
+      font-size: 1.2rem;
+    }
+
+    .live-detail {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    main { padding: 26px 0 50px; }
+
+    .speaker-summary,
+    .slide,
+    .error {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+    }
+
+    .speaker-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding: 18px 20px;
+    }
+
+    .speaker-summary h2 { margin-bottom: 2px; }
+
+    .duration {
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      padding: 6px 12px;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      margin: 30px 0 10px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .slide {
+      margin: 12px 0;
+      padding: 18px 20px;
+      scroll-margin-top: 118px;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .slide.current {
+      border-color: #79a8ff;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      box-shadow: 0 6px 24px rgba(21, 94, 239, 0.14);
+    }
+
+    .slide.current .slide-header h3 {
+      color: var(--active);
+    }
+
+    .slide-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .slide h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .slide-time {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .slide p:last-child { margin-bottom: 0; }
+
+    blockquote {
+      margin: 14px 0;
+      border-left: 4px solid var(--note-line);
+      border-radius: 6px;
+      background: var(--note);
+      padding: 12px 14px;
+    }
+
+    blockquote p { margin: 0; }
+
+    blockquote.bridge {
+      border-left-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .error {
+      padding: 18px 20px;
+    }
+
+    @media (max-width: 680px) {
+      .header-content,
+      .speaker-summary {
+        align-items: stretch;
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar { justify-content: stretch; }
+      select { min-width: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div>
+        <h1>Presenter Notes</h1>
+        <div class="subtitle" id="sync-status">Synced with presentation</div>
+      </div>
+      <div class="toolbar">
+        <label>
+          Speaker
+          <select id="speaker-select" disabled>
+            <option>Loading notes...</option>
+          </select>
+        </label>
+        <div class="nav-buttons" aria-label="Synchronized navigation">
+          <button id="prev-slide" type="button" title="Previous slide">←</button>
+          <button id="next-slide" type="button" title="Next slide">→</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <p class="status">Loading <code>notes.js</code>...</p>
+  </main>
+
+  <script src="notes.js"></script>
+  <script>
+    // Must match the CHANNEL constant in presentation.html.
+    const CHANNEL = "presentation-sync";
+
+    const content = document.querySelector("#content");
+    const select = document.querySelector("#speaker-select");
+    const syncStatus = document.querySelector("#sync-status");
+    const syncId = `notes-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const syncChannel = "BroadcastChannel" in window ? new BroadcastChannel(CHANNEL) : null;
+    let speakers = [];
+    let allSlides = [];
+    let currentSlideIndex = Math.max(0, Number(location.hash.replace("#slide-", "")) - 1 || 0);
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function formatInline(text) {
+      return escapeHtml(text)
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/`(.+?)`/g, "<code>$1</code>");
+    }
+
+    function buildSpeakersFromScript() {
+      const slides = window.SPEAKER_SLIDES;
+      const notes = window.SPEAKER_NOTES;
+      const script = window.SPEAKER_SCRIPT;
+
+      if (!Array.isArray(slides) || !Array.isArray(notes) || !Array.isArray(script)) {
+        throw new Error("Missing SPEAKER_SLIDES, SPEAKER_NOTES, or SPEAKER_SCRIPT in notes.js.");
+      }
+
+      if (slides.length !== notes.length) {
+        throw new Error("SPEAKER_SLIDES and SPEAKER_NOTES must have the same number of entries.");
+      }
+
+      return script.map((speaker, speakerIndex) => ({
+        name: speaker.name,
+        duration: speaker.duration,
+        items: speaker.items.map((item) => {
+          if (item.type === "section") {
+            return { type: "section", title: item.title };
+          }
+
+          if (item.type === "bridge") {
+            return { type: "bridge", label: item.label, text: item.text };
+          }
+
+          const slideIndex = item.index;
+          const meta = slides[slideIndex];
+          const html = notes[slideIndex];
+
+          if (!meta || !html) {
+            throw new Error(`No notes found for slide ${slideIndex + 1}.`);
+          }
+
+          return {
+            type: "slide",
+            number: String(slideIndex + 1).padStart(2, "0"),
+            title: meta.title,
+            duration: meta.duration,
+            html,
+            speakerIndex,
+            globalIndex: slideIndex
+          };
+        })
+      }));
+    }
+
+    function getSpeakerForSlide(slideIndex) {
+      const slide = allSlides.find((item) => item.globalIndex === slideIndex);
+      return slide?.speakerIndex ?? 0;
+    }
+
+    function updateCurrentSlide(scroll = true) {
+      const slide = allSlides[currentSlideIndex];
+      if (!slide) return;
+
+      const speakerIndex = getSpeakerForSlide(currentSlideIndex);
+      if (Number(select.value) !== speakerIndex) {
+        select.value = String(speakerIndex);
+        renderSpeaker(speakers[speakerIndex], false);
+      }
+
+      document.querySelectorAll(".slide").forEach((element) => {
+        element.classList.toggle("current", Number(element.dataset.slideIndex) === currentSlideIndex);
+      });
+
+      const currentElement = document.querySelector(`[data-slide-index="${currentSlideIndex}"]`);
+      if (scroll && currentElement) currentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      const previous = allSlides[currentSlideIndex - 1]?.title ?? "Start";
+      const next = allSlides[currentSlideIndex + 1]?.title ?? "End";
+      const livePanel = document.querySelector("#live-panel");
+      if (livePanel) {
+        livePanel.innerHTML = `
+          <div class="live-number">${String(currentSlideIndex + 1).padStart(2, "0")}</div>
+          <div>
+            <h2>${formatInline(slide.title)}</h2>
+            <div class="live-detail">${slide.duration} · Previous: ${formatInline(previous)} · Next: ${formatInline(next)}</div>
+          </div>
+        `;
+      }
+
+      history.replaceState(null, "", `#slide-${currentSlideIndex + 1}`);
+    }
+
+    function renderSpeaker(speaker, scroll = true) {
+      const items = speaker.items.map((item) => {
+        if (item.type === "section") {
+          return `<h3 class="section-title">${formatInline(item.title)}</h3>`;
+        }
+
+        if (item.type === "bridge") {
+          return `<blockquote class="bridge"><p><strong>${formatInline(item.label)}:</strong> ${formatInline(item.text)}</p></blockquote>`;
+        }
+
+        return `
+          <article class="slide" data-slide-index="${item.globalIndex}">
+            <div class="slide-header">
+              <h3>Slide ${item.number} — ${formatInline(item.title)}</h3>
+              <span class="slide-time">${item.duration}</span>
+            </div>
+            ${item.html}
+          </article>
+        `;
+      }).join("");
+
+      content.innerHTML = `
+        <section class="live-panel" id="live-panel" aria-live="polite"></section>
+        <section class="speaker-summary">
+          <div>
+            <h2>${formatInline(speaker.name)}</h2>
+            <div class="meta">${speaker.items.filter((item) => item.type === "slide").length} slides assigned</div>
+          </div>
+          <div class="duration">${speaker.duration}</div>
+        </section>
+        ${items}
+      `;
+
+      updateCurrentSlide(scroll);
+    }
+
+    function sendRequest(action, requestedIndex = currentSlideIndex) {
+      const payload = {
+        type: "slide-request",
+        source: syncId,
+        action,
+        index: Math.max(0, Math.min(allSlides.length - 1, requestedIndex)),
+        updatedAt: Date.now()
+      };
+
+      syncChannel?.postMessage(payload);
+
+      try {
+        localStorage.setItem(`${CHANNEL}-slide-request`, JSON.stringify(payload));
+      } catch {
+        // Local files can have restricted storage in some browsers.
+      }
+    }
+
+    function showSlide(index) {
+      currentSlideIndex = Math.max(0, Math.min(allSlides.length - 1, index));
+      updateCurrentSlide();
+      sendRequest("show", currentSlideIndex);
+    }
+
+    function receiveSync(message) {
+      if (!message || message.source === syncId || message.type !== "slide-change") return;
+      if (!Number.isFinite(message.index)) return;
+
+      currentSlideIndex = Math.max(0, Math.min(allSlides.length - 1, message.index));
+      syncStatus.textContent = `Synced: slide ${currentSlideIndex + 1} of ${allSlides.length}`;
+      updateCurrentSlide();
+    }
+
+    function initialize() {
+      speakers = buildSpeakersFromScript();
+
+      allSlides = [];
+      speakers.forEach((speaker, speakerIndex) => {
+        speaker.items.forEach((item) => {
+          if (item.type !== "slide") return;
+          item.speakerIndex = speakerIndex;
+          item.globalIndex = allSlides.length;
+          allSlides.push(item);
+        });
+      });
+
+      select.innerHTML = speakers
+        .map((speaker, index) => `<option value="${index}">${formatInline(speaker.name)} — ${speaker.duration}</option>`)
+        .join("");
+      select.disabled = false;
+      select.addEventListener("change", () => renderSpeaker(speakers[select.value]));
+      document.querySelector("#prev-slide").addEventListener("click", () => showSlide(currentSlideIndex - 1));
+      document.querySelector("#next-slide").addEventListener("click", () => showSlide(currentSlideIndex + 1));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+          event.preventDefault();
+          showSlide(currentSlideIndex + 1);
+        }
+        if (event.key === "ArrowLeft" || event.key === "PageUp") {
+          event.preventDefault();
+          showSlide(currentSlideIndex - 1);
+        }
+        if (event.key === "Home") showSlide(0);
+        if (event.key === "End") showSlide(allSlides.length - 1);
+      });
+
+      syncChannel?.addEventListener("message", (event) => receiveSync(event.data));
+      window.addEventListener("message", (event) => receiveSync(event.data));
+      window.addEventListener("storage", (event) => {
+        if (event.key !== `${CHANNEL}-current-slide` || !event.newValue) return;
+        try {
+          receiveSync(JSON.parse(event.newValue));
+        } catch {
+          // Ignore unavailable or malformed storage.
+        }
+      });
+
+      try {
+        const stored = JSON.parse(localStorage.getItem(`${CHANNEL}-current-slide`));
+        if (stored?.type === "slide-change" && Number.isFinite(stored.index)) currentSlideIndex = stored.index;
+      } catch {
+        // Ignore unavailable or malformed storage.
+      }
+
+      renderSpeaker(speakers[getSpeakerForSlide(currentSlideIndex)]);
+    }
+
+    function showLoadError(message) {
+      content.innerHTML = `
+        <section class="error">
+          <h2>Could not load notes</h2>
+          <p>${formatInline(message)}</p>
+          <p>Make sure <code>notes.js</code> is in the same folder as <code>presenter.html</code>.</p>
+        </section>
+      `;
+    }
+
+    try {
+      initialize();
+      syncStatus.textContent = "Synced with notes.js";
+    } catch (error) {
+      showLoadError(error.message || "Unknown error while initializing notes.");
+    }
+  </script>
+</body>
+</html>
