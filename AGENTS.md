@@ -320,11 +320,150 @@ Add `class="highlight"` to a `.flow-node` to give it a cyan accent border/backgr
 | `h1` | Cover title or closing title |
 | `h2` | Primary slide heading |
 | `h3` | Secondary heading inside components |
-| `.accent` | Cyan color — use on `<span>` inside headings |
-| `.amber` | Amber color |
-| `.coral` | Coral/red color |
-| `.violet` | Violet/purple color |
-| `.muted` | Muted text color (secondary gray) |
+| `.accent` | Blue gradient fill — use on `<span>` inside headings only (brandbook rule: heading accents are always gradient, never flat) |
+| `.accent-orange` | Orange gradient fill — use on `<span>` inside headings |
+| `.accent-agentic` | Violet→pink gradient — reserved for Agentic AI content only |
+| `.highlight` | Solid blue marker block behind inline text (`<span class="highlight">words</span>`) |
+| `.highlight-orange` | Solid orange marker block |
+| `.blue` | Flat blue — eyebrows and labels only, never headings |
+| `.amber` | Flat orange — eyebrows and labels only |
+| `.coral` | Danger red |
+| `.violet` | Agentic violet — reserved for Agentic AI content |
+| `.muted` | Muted text color |
+
+**Hard rule from brandbook:** heading text is either plain white, or uses a gradient/highlight treatment on one accented phrase. Never set a heading (or part of one) to a flat accent color — use `.accent` (gradient) or `.highlight` instead. Eyebrows and labels may stay flat blue.
+
+**Numbers on dark slides:** stat values must be white (`color: var(--text)`), never tinted blue or orange.
+
+---
+
+## Background variants
+
+Add one of these classes to a `<section class="slide …">` to change its background:
+
+| Class | Background |
+|-------|-----------|
+| _(none)_ | Flat `#282828` (default) |
+| `.bg-grid` | Blueprint grid on dark (straight) |
+| `.bg-grid-tilted` | Blueprint grid on dark (tilted) |
+| `.bg-radial` | Blue radial wash — good for covers |
+| `.bg-diagonal` | Blue diagonal gradient — good for closings |
+| `.bg-logo-pattern` | Tiled Streaver isotype pattern |
+| `.bg-deep` | Deeper dark `#181818` |
+| `.bg-blue` | Solid brand blue — strong CTA slides |
+
+Background asset files live in `assets/backgrounds/`.
+
+**Rule:** never place text over gradient backgrounds (`.bg-radial`, `.bg-diagonal`). The shifting luminosity makes all text — headings included — unreliable to read. Gradient backgrounds are decorative only: use them on image-only or logo-only slides (e.g. a full-bleed visual with no copy). For any slide with readable content use `.bg-grid`, `.bg-grid-tilted`, the default flat dark, or `.bg-blue` (solid, fully readable).
+
+---
+
+## Logo placement
+
+All logo files live in `assets/logos/`. Choose the right file based on surface and context:
+
+### Which logo to use
+
+| Surface | Asset | When |
+|---------|-------|------|
+| Dark slide (default) | `streaver-logo-horizontal-white.png` | Wide space — slide footer, closing slide |
+| Dark slide (tight) | `streaver-isotype-white.png` | Slide header `.brand-mark`, avatar-sized |
+| Light/white slide | `streaver-logo-horizontal-color.png` | Same as above, on white/light background |
+| Light (tight) | `streaver-isotype-blue.png` | Header on light slides |
+| Circle avatar / favicon | `streaver-isotype-circle-white-on-dark.png` | Round avatar context, dark bg |
+| Circle avatar / favicon | `streaver-isotype-circle-blue-on-white.png` | Round avatar context, light bg |
+| Wordmark only | `streaver-wordmark-white.png` / `streaver-wordmark-dark.png` | When the beaver is already present |
+
+**Rules (from brandbook):**
+- Never place a gradient fill on any part of the logo — gradient treatment is for type only.
+- Minimum clear space around the logo = width of the beaver mark on all sides.
+- Do not stretch, recolor, or apply effects (drop shadow, outline) to the logo.
+- The isotype always shows the beaver facing right and looking upward — do not flip or rotate.
+
+### Placement patterns in slides
+
+**Slide header (every slide):** the `.brand-mark` span already loads `streaver-isotype-white.png` as a CSS background image. No changes needed.
+
+**Background watermark (cover / closing):** large isotype at low opacity in the top-right corner — creates depth without competing with content:
+
+```html
+<section class="slide active bg-radial" …>
+  <img src="assets/logos/streaver-isotype-white.png" alt=""
+       style="position:absolute;right:-80px;top:-80px;width:380px;opacity:0.08;pointer-events:none;z-index:0;">
+  <!-- slide content above z-index:0 -->
+</section>
+```
+
+**Closing slide (solid blue `.bg-blue`):** horizontal white logo shown prominently — place it at the top or bottom of the slide body:
+
+```html
+<img src="assets/logos/streaver-logo-horizontal-white.png" alt="Streaver"
+     style="height:48px;display:block;margin-bottom:32px;">
+```
+
+---
+
+## Icons
+
+Icons use the CSS mask technique so they can be recolored to any brand color. Set `--icon-src` to the SVG path, then add a color modifier:
+
+```html
+<span class="icon icon-blue" style="--icon-src: url('assets/icons/streaver-icon-01-general-rocket.svg')"></span>
+```
+
+**Color modifiers:** `icon-blue` (brand blue), `icon-orange` (brand orange), `icon-muted` (muted). No modifier = white.
+
+**Size modifiers:** `icon-sm` (24 px), `icon-md` (32 px), `icon-lg` (48 px), `icon-xl` (64 px). No modifier = 40 px.
+
+**Color-by-surface rule (from brandbook):**
+- On dark backgrounds → white (`no modifier`)
+- On light backgrounds → blue (`icon-blue`)
+- As a high-energy accent → orange (`icon-orange`)
+- On a solid blue tile → white (`no modifier`)
+
+**Full icon library** (213 icons, `assets/icons/`). Naming convention: `streaver-icon-{nn}-{category}-{name}.svg`
+
+**Available icons** (in `assets/icons/`):
+
+**General** (`streaver-icon-01-general-*.svg`)
+
+`add-circle` · `alert` · `arrow-diag-down-left` · `arrow-diag-down-right` · `arrow-diag-up-left` · `arrow-diag-up-right` · `arrow-down-circle` · `arrow-down-up` · `arrow-exchange` · `arrow-first-page` · `arrow-fullscreen-left` · `arrow-fullscreen-right` · `arrow-last-page` · `arrow-left-circle` · `arrow-maximize` · `arrow-move` · `arrow-right-circle` · `arrow-up-circle` · `badge` · `battery-charge` · `battery-full` · `battery-half` · `battery-low` · `bookmark` · `bug` · `bulb` · `cart-minus` · `cart-plus` · `checklist-circle` · `chevron-left` · `chevron-right` · `clock` · `cogwheel` · `cogwheel-services` · `cogwheel-time-management` · `conversation` · `development` · `eye` · `eye-off` · `flag` · `flash` · `gear` · `graphic-design` · `graphs-chart` · `hand-solution` · `heart` · `image` · `incoming-call` · `master-key` · `megaphone` · `pin-map` · `process` · `refresh-redo` · `refresh-undo` · `rocket` · `search` · `settings` · `speed` · `star` · `step` · `sync-reload` · `target` · `tools` · `traffic-cone` · `transfer` · `umbrella` · `verification-badge` · `video-player` · `video-player-alt` · `volume-down` · `volume-mute` · `volume-up` · `warning` · `wifi-signal` · `zoom-in` · `zoom-out`
+
+**Technology** (`streaver-icon-04-tech-*.svg`)
+
+`camera` · `camera-back` · `desktop` · `laptop` · `memory-card` · `printer` · `processor` · `router` · `satellite` · `satellite-alt` · `smartphone` · `smartwatch` · `usb-drive` · `video-camera` · `vr-headset`
+
+**Artificial intelligence** (`streaver-icon-06-ai-*.svg`)
+
+`bionic-hand` · `brain` · `chip` · `face-id` · `robot`
+
+**Data security** (`streaver-icon-07-data-security-*.svg`)
+
+`atomic-energy` · `barrier` · `cloud-network` · `face-scan` · `folders` · `globe` · `hosting` · `id-card` · `lock` · `lock-open` · `message-chat` · `network` · `network-alt` · `networking` · `shield-check` · `workflow`
+
+**Teamwork** (`streaver-icon-08-teamwork-*.svg`)
+
+`laptop` · `meeting-2` · `meeting-4` · `meeting-5` · `meeting-8` · `meeting-9` · `meeting-13` · `meeting-14` · `people-01` · `people-10` · `substitute` · `team`
+
+**Hands** (`streaver-icon-09-hands-*.svg`)
+
+`cooperation` · `faces-happy-sad-normal` · `fire-heart` · `high-five` · `partner` · `security-share-folder` · `teamwork`
+
+**Message** (`streaver-icon-10-message-*.svg`)
+
+`email` · `email-open` · `faq` · `mailbox`
+
+**Design** (`streaver-icon-11-design-*.svg`)
+
+`color-palette` · `drawing-tablet` · `easel` · `geometry` · `graphic-tablet` · `ink` · `paint-brush` · `paint-bucket` · `photo-album` · `pictures-ai` · `vector-pen` · `watercolor`
+
+**Pets** (`streaver-icon-12-pets-*.svg`)
+
+`cat` · `dog` · `paw` · `paw-alt` · `pet-adoption`
+
+**Sports** (`streaver-icon-13-sports-*.svg`)
+
+`achievement` · `podium` · `scoreboard` · `teams-tshirts` · `trophy`
 
 ---
 
@@ -333,17 +472,22 @@ Add `class="highlight"` to a `.flow-node` to give it a cyan accent border/backgr
 Defined as CSS variables at the top of `<style>` in `presentation.html`. Edit these to retheme the entire presentation.
 
 ```css
---bg            /* Dark background */
---bg-soft       /* Slightly lighter background */
---text          /* Primary text color */
---muted         /* Secondary / de-emphasized text */
---cyan          /* Primary accent — borders, highlights, eyebrows */
---amber         /* Secondary accent — warnings, tags */
---coral         /* Danger / error accent */
---violet        /* Tertiary accent */
---line          /* Subtle border color */
---line-bright   /* Stronger border color */
---shadow        /* Box shadow for floating panels */
+--dark              /* #282828 — primary dark surface */
+--dark-deep         /* #181818 — deeper dark */
+--blue              /* #2f6cdb — brand blue */
+--blue-primary      /* #3d5ae0 — primary blue accent */
+--orange            /* #fd7f23 — brand orange */
+--bg                /* alias for --dark */
+--line              /* White at 14% opacity — subtle border on dark */
+--line-bright       /* White at 28% opacity — stronger border */
+--text              /* #f4f4f4 — primary text */
+--muted             /* White at 62% — secondary text */
+--faint             /* White at 38% — de-emphasized text */
+--shadow            /* Neutral shadow, no color glow */
+--radius            /* 16px — card radius (--radius-lg) */
+--gradient-text-blue    /* Linear gradient for blue heading accents */
+--gradient-text-orange  /* Linear gradient for orange heading accents */
+--highlight-blue        /* Solid blue marker block color */
 ```
 
 ---
