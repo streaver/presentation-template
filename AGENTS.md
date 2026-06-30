@@ -351,10 +351,11 @@ Add one of these classes to a `<section class="slide …">` to change its backgr
 | `.bg-logo-pattern` | Tiled Streaver isotype pattern |
 | `.bg-deep` | Deeper dark `#181818` |
 | `.bg-blue` | Solid brand blue — strong CTA slides |
+| `.bg-white` | White surface — dark text, adapted tokens |
 
 Background asset files live in `assets/backgrounds/`.
 
-**Rule:** never place text over gradient backgrounds (`.bg-radial`, `.bg-diagonal`). The shifting luminosity makes all text — headings included — unreliable to read. Gradient backgrounds are decorative only: use them on image-only or logo-only slides (e.g. a full-bleed visual with no copy). For any slide with readable content use `.bg-grid`, `.bg-grid-tilted`, the default flat dark, or `.bg-blue` (solid, fully readable).
+**Rule — no text over gradients:** never place text over gradient backgrounds (`.bg-radial`, `.bg-diagonal`). The shifting luminosity makes all text — headings included — unreliable to read. Gradient backgrounds are decorative only: use them on image-only or logo-only slides (e.g. a full-bleed visual with no copy). For any slide with readable content use `.bg-grid`, `.bg-grid-tilted`, the default flat dark, or `.bg-blue` (solid, fully readable).
 
 ---
 
@@ -384,7 +385,7 @@ All logo files live in `assets/logos/`. Choose the right file based on surface a
 
 **Slide header (every slide):** the `.brand-mark` span already loads `streaver-isotype-white.png` as a CSS background image. No changes needed.
 
-**Background watermark (cover / closing):** large isotype at low opacity in the top-right corner — creates depth without competing with content:
+**Background watermark (cover / closing):** large isotype at low opacity in the top-right corner — creates depth without competing with content. **Only use this on plain dark, `bg-deep`, or `bg-blue` slides. On grid or logo-pattern backgrounds the isotype is invisible at low opacity — skip it.**
 
 ```html
 <section class="slide active bg-radial" …>

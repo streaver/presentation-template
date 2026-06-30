@@ -127,7 +127,18 @@
 
     /* ── Background texture variants ─────────────────────────────── */
     .bg-grid         { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark.png") center/600px repeat; }
-    .bg-grid-tilted  { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark-tilted.png") center/600px repeat; }
+    .bg-grid-tilted  { background: var(--bg) url("assets/backgrounds/grid-blue-on-dark-tilted.png") center/cover no-repeat; }
+    .bg-white {
+      background: #fff;
+      --text: #282828;
+      --muted: rgba(0,0,0,0.55);
+      --faint: rgba(0,0,0,0.35);
+      --line: rgba(0,0,0,0.12);
+      --line-bright: rgba(0,0,0,0.24);
+      --surface: #f5f5f5;
+      --surface-2: #ededed;
+      --bg: #fff;
+    }
     .bg-radial       { background: var(--bg) url("assets/backgrounds/gradient-blue-radial.png") center/cover no-repeat; }
     .bg-diagonal     { background: var(--bg) url("assets/backgrounds/gradient-blue-diagonal.png") center/cover no-repeat; }
     .bg-logo-pattern { background: var(--bg) url("assets/backgrounds/logo-pattern-light.png") center/400px repeat; }
@@ -879,7 +890,7 @@
 
     .section-slide .slide-body {
       display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: auto 1fr;
       gap: 34px;
       align-items: center;
     }
@@ -1231,7 +1242,7 @@
       .vuln-node { min-width: 42%; }
       .ladder { grid-template-columns: 1fr; }
       .ladder-step { min-height: auto; }
-      .section-slide .slide-body { grid-template-columns: 90px 1fr; }
+      .section-slide .slide-body { grid-template-columns: auto 1fr; }
     }
 
     @media (max-width: 650px) {
@@ -1277,20 +1288,24 @@
          SLIDE 0 — Cover
     ════════════════════════════════════════════════════════════════════ -->
     <section class="slide active bg-grid" data-title="The Animal That Reshapes Rivers" data-duration="0:45">
-      <img src="assets/logos/streaver-isotype-white.png" alt="" style="position:absolute;right:-60px;bottom:-60px;width:440px;opacity:0.07;pointer-events:none;z-index:0;">
       <header class="slide-head">
         <div class="brand"><span class="brand-mark"></span> Beavers</div>
         <div class="section-name">A Natural History</div>
       </header>
       <div class="slide-body">
-        <div class="eyebrow">Castor canadensis</div>
-        <h1>The animal that <span class="accent">reshapes</span> rivers.</h1>
-        <p class="lead">One of the few species besides humans that fundamentally transforms the landscape it inhabits — building wetlands, cooling streams, and engineering ecosystems from scratch.</p>
-        <div class="pill-wrap">
-          <span class="pill"><span class="pill-dot"></span> Dam Building</span>
-          <span class="pill"><span class="pill-dot"></span> Wetland Creation</span>
-          <span class="pill"><span class="pill-dot"></span> Keystone Species</span>
-          <span class="pill"><span class="pill-dot"></span> Castor canadensis</span>
+        <div class="split">
+          <div>
+            <div class="eyebrow">Castor canadensis</div>
+            <h1>The animal that <span class="accent">reshapes</span> rivers.</h1>
+            <p class="lead">One of the few species besides humans that fundamentally transforms the landscape it inhabits — building wetlands, cooling streams, and engineering ecosystems from scratch.</p>
+            <div class="pill-wrap">
+              <span class="pill"><span class="pill-dot"></span> Dam Building</span>
+              <span class="pill"><span class="pill-dot"></span> Wetland Creation</span>
+              <span class="pill"><span class="pill-dot"></span> Keystone Species</span>
+            </div>
+          </div>
+          <img src="assets/images/beaver-portrait.jpg" alt="North American Beaver"
+               style="width:100%;max-height:72vh;object-fit:cover;border-radius:var(--radius-lg);">
         </div>
       </div>
     </section>
@@ -1304,7 +1319,7 @@
         <div class="section-name"></div>
       </header>
       <div class="slide-body">
-        <div class="section-index">01</div>
+
         <div>
           <div class="eyebrow">Biology</div>
           <h2>Built for the water.</h2>
@@ -1390,7 +1405,7 @@
         <div class="section-name"></div>
       </header>
       <div class="slide-body">
-        <div class="section-index">02</div>
+
         <div>
           <div class="eyebrow">Behavior</div>
           <h2>Engineered by instinct.</h2>
@@ -1429,6 +1444,8 @@
             <p>Mud, leaves, and plant matter are packed into gaps from the upstream side. Beavers repair leaks immediately — sometimes working through the night after a storm.</p>
           </div>
         </div>
+        <img src="assets/images/beaver-dam.jpg" alt="Beaver dam"
+             style="display:block;width:100%;max-height:200px;object-fit:cover;border-radius:var(--radius-lg);margin-top:18px;">
       </div>
     </section>
 
@@ -1474,7 +1491,7 @@
         <div class="section-name"></div>
       </header>
       <div class="slide-body">
-        <div class="section-index">03</div>
+
         <div>
           <div class="eyebrow">Ecosystem Impact</div>
           <h2>The landscape changes when a beaver arrives.</h2>
@@ -1492,13 +1509,19 @@
         <div class="section-name">Ecosystem Impact</div>
       </header>
       <div class="slide-body">
-        <div class="eyebrow">The keystone effect</div>
-        <p class="quote">Beavers don't adapt to the environment.<br><span class="muted">The environment adapts to beavers.</span></p>
-        <div class="pill-wrap">
-          <span class="pill"><span class="pill-dot"></span> 40+ Species Benefit</span>
-          <span class="pill"><span class="pill-dot"></span> Groundwater Recharge</span>
-          <span class="pill"><span class="pill-dot"></span> Wildfire Resistance</span>
-          <span class="pill"><span class="pill-dot"></span> Carbon Storage</span>
+        <div class="split">
+          <div>
+            <div class="eyebrow">The keystone effect</div>
+            <p class="quote">Beavers don't adapt to the environment.<br><span class="muted">The environment adapts to beavers.</span></p>
+            <div class="pill-wrap">
+              <span class="pill"><span class="pill-dot"></span> 40+ Species Benefit</span>
+              <span class="pill"><span class="pill-dot"></span> Groundwater Recharge</span>
+              <span class="pill"><span class="pill-dot"></span> Wildfire Resistance</span>
+              <span class="pill"><span class="pill-dot"></span> Carbon Storage</span>
+            </div>
+          </div>
+          <img src="assets/images/beaver-wetlands.jpg" alt="Beaver wetlands, Baugh Creek Idaho"
+               style="width:100%;max-height:72vh;object-fit:cover;border-radius:var(--radius-lg);">
         </div>
       </div>
     </section>
@@ -1596,7 +1619,7 @@
         <div class="section-name"></div>
       </header>
       <div class="slide-body">
-        <div class="section-index">04</div>
+
         <div>
           <div class="eyebrow">Conservation</div>
           <h2>Bringing them back on purpose.</h2>
