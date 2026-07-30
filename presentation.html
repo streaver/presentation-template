@@ -311,6 +311,15 @@
     .icon-lg { width: 48px; height: 48px; }
     .icon-xl { width: 64px; height: 64px; }
 
+    /* ── Figure / image (diagrams & photos on the deck) ───────────── */
+    .figure            { margin: 0; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    .figure img        { max-width: 100%; height: auto; display: block; }
+    .figure figcaption { font-size: 12px; color: var(--faint); }
+    /* Light surface for line-art/diagrams that assume a white background */
+    .figure.on-white           { background: #fff; border-radius: 14px; padding: 16px 20px;
+                                 box-shadow: 0 8px 30px rgba(0,0,0,.28); }
+    .figure.on-white figcaption{ color: #555; align-self: flex-end; }
+
     /* ── Layout grids ─────────────────────────────────────────────── */
     .grid-2,
     .grid-3,
@@ -1811,6 +1820,25 @@
         });
       };
 
+      // Scale a slide's body down if its content would overflow the frame,
+      // so nothing is ever clipped on short or windowed viewports.
+      const fitActiveSlide = () => {
+        const slide = slides[index];
+        const body = slide.querySelector(".slide-body");
+        if (!body) return;
+        const head = slide.querySelector(".slide-head");
+        body.style.transform = "";                       // reset before measuring
+        const cs = getComputedStyle(slide);
+        const avail = slide.clientHeight
+          - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
+          - (head ? head.offsetHeight : 0);              // = height of the 1fr body row
+        const need = body.scrollHeight;                  // natural content height
+        if (avail > 0 && need > avail) {
+          body.style.transformOrigin = "center center";
+          body.style.transform = `scale(${Math.max(0.55, avail / need)})`;
+        }
+      };
+
       const show = (nextIndex) => {
         index = Math.max(0, Math.min(slides.length - 1, nextIndex));
         slides.forEach((slide, slideIndex) => slide.classList.toggle("active", slideIndex === index));
@@ -1820,6 +1848,11 @@
         renderNotes();
         renderOverview();
         broadcastSlide();
+        fitActiveSlide();
+        requestAnimationFrame(fitActiveSlide);           // re-measure after layout settles
+        slides[index].querySelectorAll("img").forEach((img) => {
+          if (!img.complete) img.addEventListener("load", fitActiveSlide, { once: true });
+        });
       };
 
       const next = () => show(index + 1);
@@ -1870,6 +1903,8 @@
         const requestedIndex = Number(location.hash.replace("#", "")) - 1;
         if (Number.isFinite(requestedIndex) && requestedIndex !== index) show(requestedIndex);
       });
+
+      window.addEventListener("resize", fitActiveSlide);
 
       let lastRequestAt = 0;
       const receiveSync = (message) => {

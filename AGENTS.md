@@ -48,6 +48,8 @@ Every slide is a `<section>` inside `<main class="deck">`:
 
 **The first slide** must have `class="slide active"`. All others have `class="slide"` (plus optional modifier classes).
 
+**Auto-fit:** if a slide's content is taller than the viewport frame, the deck scales `.slide-body` down automatically (floor 0.55×) so nothing is clipped on short or windowed screens. A slide that hits the floor genuinely has too much content and should be split. Still aim to fit at 1280×720 without scaling.
+
 ### Slide modifier classes
 
 | Class | Effect |
@@ -309,6 +311,24 @@ Add `class="highlight"` to a `.flow-node` to give it a cyan accent border/backgr
 </div>
 ```
 
+### Figure / image (diagrams and photos)
+
+```html
+<!-- photo or already-dark asset: sits directly on the deck -->
+<figure class="figure">
+  <img src="assets/images/photo.png" alt="…" style="max-height:340px;">
+  <figcaption>Caption · source · license</figcaption>
+</figure>
+
+<!-- white-background diagram: wrap in a light card so it reads on dark -->
+<figure class="figure on-white">
+  <img src="assets/images/diagram.png" alt="…" style="max-height:300px;">
+  <figcaption>Caption · author · CC BY-SA</figcaption>
+</figure>
+```
+
+Use `.on-white` for third-party line-art that assumes a white background; without the light card it is nearly invisible on the dark deck. Constrain height with `max-height` on the `img` (300 to 360px works well) so tall diagrams don't dominate; auto-fit then handles any residual overflow. Pair diagrams in a `.split` with explanatory text on one side. Keep an attribution line in `figcaption` for CC-licensed assets.
+
 ---
 
 ## Typography helpers
@@ -411,6 +431,8 @@ Icons use the CSS mask technique so they can be recolored to any brand color. Se
 ```html
 <span class="icon icon-blue" style="--icon-src: url('assets/icons/streaver-icon-01-general-rocket.svg')"></span>
 ```
+
+**Inlining an icon as a data URI?** In an inline `style="…"`, the `url()` must use single quotes: `--icon-src: url('data:image/svg+xml,…')`. Double quotes close the `style` attribute early and the icon renders as a solid square. Percent-encode any quotes inside the SVG (`%22`). File-path icons (`url('assets/icons/…')`) are already single-quoted and need no change.
 
 **Color modifiers:** `icon-blue` (brand blue), `icon-orange` (brand orange), `icon-muted` (muted). No modifier = white.
 
